@@ -139,4 +139,119 @@ bool Valid_Rocket(SDL_Rect a, SDL_Rect b)
     return false;
 }
 
+void game_quit(SDL_Texture* bomb_texture, SDL_Texture* bomb_flip_texture,
+              SDL_Texture* sound_off_texture, SDL_Texture* sound_on_texture,
+              SDL_Texture* lose_texture, SDL_Texture* character_texture,
+              SDL_Texture* home_texture, SDL_Texture* sound,
+              SDL_Texture* rocket_texture, SDL_Texture* background,
+              SDL_Renderer* renderer, SDL_Window* window,
+              Mix_Music* music)
+{
+                            SDL_DestroyTexture(bomb_texture);
+                            SDL_DestroyTexture(bomb_flip_texture);
+                            SDL_DestroyTexture(sound_off_texture);
+                            SDL_DestroyTexture(sound_on_texture);
+                            SDL_DestroyTexture(lose_texture);
+                            SDL_DestroyTexture(character_texture);
+                            SDL_DestroyTexture(home_texture);
+                            SDL_DestroyTexture(sound);
+                            SDL_DestroyTexture(rocket_texture);
+                            SDL_DestroyTexture(background);
+                            SDL_DestroyRenderer(renderer);
+                            SDL_DestroyWindow(window);
+                            IMG_Quit();
+                            SDL_Quit();
+                            TTF_Quit();
+                            Mix_FreeMusic(music);
+                            Mix_CloseAudio();
+}
+
+void ShowBomb(SDL_Rect &bomb, SDL_Texture* bomb_texture, SDL_Renderer* renderer,
+             float BOMB_SPEED, bool &showBomb, bool &bomb_Visible, int &point)
+{
+    if (showBomb)
+    {
+        bomb.x -= BOMB_SPEED;
+        SDL_RenderCopy(renderer, bomb_texture, NULL, &bomb);
+
+        if (bomb.x + bomb.w < 0)
+        {
+            showBomb = false;
+            bomb_Visible = false;
+            point++;
+        }
+    }
+}
+
+void ShowBombFlip(SDL_Rect &bomb_flip, SDL_Texture* bomb_flip_texture, SDL_Renderer* renderer,
+             float BOMB_SPEED, bool &showBombflip, bool &bomb_flip_Visible, int &point)
+{
+    if (showBombflip)
+    {
+        bomb_flip.x -= BOMB_SPEED;
+        SDL_RenderCopy(renderer, bomb_flip_texture, NULL, &bomb_flip);
+
+        if (bomb_flip.x + bomb_flip.w < 0)
+        {
+            showBombflip = false;
+            bomb_flip_Visible = false;
+            point++;
+        }
+    }
+}
+
+void start_game(bool &gameOver, bool &inGame, bool &lose_menu,
+                 bool &showBomb, bool &showBombflip, bool &showRocket,
+                 bool &bomb_Visible, bool &bomb_flip_Visible, bool &rocket_Visible,
+                 Uint32 &nextBombTime, Uint32 &nextBombflipTime, Uint32 &nextRocketTime,
+                 SDL_Rect &rocket, SDL_Rect &bomb, SDL_Rect &bomb_flip,
+                 int &flip, int &point, SDL_Rect &character,
+                 bool &moveDown, bool &moveUp, int &targetY)
+{
+    gameOver = false;
+    inGame = true;
+    lose_menu = false;
+    showBomb = false;
+    showBombflip = false;
+    showRocket = false;
+    bomb_Visible = false;
+    bomb_flip_Visible = false;
+    rocket_Visible = false;
+    nextBombTime = SDL_GetTicks() + (rand() % 5000) + 1000;
+    nextBombflipTime = SDL_GetTicks() + (rand() % 5000) + 1000;
+    nextRocketTime = SDL_GetTicks() + (rand() % 10000) + 5000;
+    rocket.x = ROCKET_START_X;
+    bomb.x = BOMB_START_X;
+    bomb_flip.x = BOMB_START_X;
+    flip = 0;
+    point = 0;
+    character.y = CHARACTER_Y1;
+    moveDown = false;
+    moveUp = false;
+    targetY = character.y;
+}
+
+void game_on(int &flip, SDL_Rect &character, int &point, bool &inGame, bool &lose_menu,
+             bool &moveDown, bool &moveUp, bool &showBomb, bool &showBombflip,
+             bool &showRocket, bool &bomb_Visible, bool &bomb_flip_Visible,
+             Uint32 &nextBombTime, Uint32 &nextBombflipTime)
+{
+
+    flip = 0;
+    character.y = 328;
+    point = 0;
+    inGame = true;
+    lose_menu = false;
+    moveDown = false;
+    moveUp = false;
+
+    showBomb = false;
+    showBombflip = false;
+    showRocket = false;
+    bomb_Visible = false;
+    bomb_flip_Visible = false;
+
+    nextBombTime = SDL_GetTicks() + (rand() % 5000) + 1000;
+    nextBombflipTime = SDL_GetTicks() + (rand() % 5000) + 1000;
+}
 #endif // GAME_LOGIC_H

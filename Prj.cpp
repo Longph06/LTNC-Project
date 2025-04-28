@@ -85,11 +85,11 @@ int main(int argc, char* argv[])
     bool bomb_Visible = false;
     bool bomb_flip_Visible = false;
     bool rocket_Visible = false;
+    bool moveUp = false;
+    bool moveDown = false;
 
     int sound_check = 0;
     int flip = 0;
-    bool moveUp = false;
-    bool moveDown = false;
     int targetY = character.y;
     int point = 0;
     int mod;
@@ -198,18 +198,7 @@ int main(int argc, char* argv[])
                     nextBombTime = SDL_GetTicks() + (rand() % 4000) + ms;
                 }
 
-                if (showBomb)
-                {
-                    bomb.x -= BOMB_SPEED;
-                    SDL_RenderCopy(renderer, bomb_texture, NULL, &bomb);
-                    if (bomb.x + BOMB_WIDTH < 0)
-                    {
-                        showBomb = false;
-                        bomb_Visible = false;
-                        point++;
-                        std::cout << point << std::endl;
-                    }
-                }
+                ShowBomb(bomb, bomb_texture, renderer, BOMB_SPEED, showBomb, bomb_Visible, point);
 
                 if (SDL_GetTicks() >= nextBombflipTime && !bomb_flip_Visible)
                 {
@@ -219,17 +208,7 @@ int main(int argc, char* argv[])
                     nextBombflipTime = SDL_GetTicks() + (rand() % 4000) + ms;
                 }
 
-                if (showBombflip)
-                {
-                    bomb_flip.x -= BOMB_SPEED;
-                    SDL_RenderCopy(renderer, bomb_flip_texture, NULL, &bomb_flip);
-                    if (bomb_flip.x + BOMB_WIDTH < 0)
-                    {
-                        showBombflip = false;
-                        point++;
-                        bomb_flip_Visible = false;
-                    }
-                }
+                ShowBombFlip(bomb_flip, bomb_flip_texture, renderer, BOMB_SPEED, showBombflip, bomb_flip_Visible, point);
 
                 if (SDL_GetTicks() >= nextRocketTime && !rocket_Visible && Valid_Rocket(bomb, bomb_flip) )
                 {
@@ -298,30 +277,8 @@ int main(int argc, char* argv[])
                     int mouseY = event.button.y;
                     if(mouseX >= 430 && mouseX <= 570 && mouseY >= 250 && mouseY <= 365)
                     {
-                        gameOver = false;
-                        inGame = true;
-                        lose_menu = false;
-                        showBomb = false;
-                        showBombflip = false;
-                        showRocket = false;
-
-                        bomb_Visible = false;
-                        bomb_flip_Visible = false;
-                        rocket_Visible = false;
-
-                        nextBombTime = SDL_GetTicks() + (rand() % 5000) + 1000;
-                        nextBombflipTime = SDL_GetTicks() + (rand() % 5000) + 1000;
-                        nextRocketTime = SDL_GetTicks() + (rand() % 10000) + 5000;
-
-                        rocket.x = ROCKET_START_X;
-                        bomb.x = BOMB_START_X;
-                        bomb_flip.x = BOMB_START_X;
-                        flip = 0;
-                        point = 0;
-                        character.y = CHARACTER_Y1;
-                        moveDown = false;
-                        moveUp = false;
-                        targetY = character.y;
+                        start_game(gameOver, inGame, lose_menu, showBomb, showBombflip, showRocket, bomb_Visible, bomb_flip_Visible, rocket_Visible,
+                 nextBombTime, nextBombflipTime, nextRocketTime, rocket, bomb, bomb_flip, flip, point, character, moveDown, moveUp, targetY);
                     }
                 }
             }
@@ -343,23 +300,8 @@ int main(int argc, char* argv[])
 
                         if(mouseX >= HOME_START_X && mouseX <= (HOME_START_X + HOME_WIDTH) && mouseY >= HOME_START_Y && mouseY <= (HOME_START_Y + HOME_HEIGHT))
                         {
-                            SDL_DestroyTexture(bomb_texture);
-                            SDL_DestroyTexture(bomb_flip_texture);
-                            SDL_DestroyTexture(sound_off_texture);
-                            SDL_DestroyTexture(sound_on_texture);
-                            SDL_DestroyTexture(lose_texture);
-                            SDL_DestroyTexture(character_texture);
-                            SDL_DestroyTexture(home_texture);
-                            SDL_DestroyTexture(sound);
-                            SDL_DestroyTexture(rocket_texture);
-                            SDL_DestroyTexture(background);
-                            SDL_DestroyRenderer(renderer);
-                            SDL_DestroyWindow(window);
-                            IMG_Quit();
-                            SDL_Quit();
-                            TTF_Quit();
-                            Mix_FreeMusic(music);
-                            Mix_CloseAudio();
+                           game_quit(bomb_texture, bomb_flip_texture, sound_off_texture, sound_on_texture, lose_texture,
+                                     character_texture, home_texture, sound, rocket_texture, background, renderer, window, music);
                             return 0;
                         }
 
@@ -379,20 +321,8 @@ int main(int argc, char* argv[])
                         {
                             SDL_DestroyTexture(background);
                             background = loadTexture("Ingame.png", renderer);
-                            flip = 0;
-                            character.y = 328;
-                            point = 0;
-                            inGame = true;
-                            lose_menu = false;
-                            moveDown = false;
-                            moveUp = false;
-                            showBomb = false;
-                            showBombflip = false;
-                            showRocket = false;
-                            bomb_Visible = false;
-                            bomb_flip_Visible = false;
-                            nextBombTime = SDL_GetTicks() + (rand() % 5000) + 1000;
-                            nextBombflipTime = SDL_GetTicks() + (rand() % 5000) + 1000;
+                            game_on(flip, character, point, inGame, lose_menu, moveDown, moveUp, showBomb,
+                                    showBombflip, showRocket, bomb_Visible, bomb_flip_Visible, nextBombTime,nextBombflipTime);
                         }
 
                         if (mouseX >= 0 && mouseX <= 174 && mouseY >= 490 && mouseY <= 550)
@@ -407,23 +337,7 @@ int main(int argc, char* argv[])
         SDL_RenderPresent(renderer);
         SDL_Delay(delay);
     }
-
-    SDL_DestroyTexture(bomb_texture);
-    SDL_DestroyTexture(bomb_flip_texture);
-    SDL_DestroyTexture(sound_off_texture);
-    SDL_DestroyTexture(sound_on_texture);
-    SDL_DestroyTexture(lose_texture);
-    SDL_DestroyTexture(character_texture);
-    SDL_DestroyTexture(home_texture);
-    SDL_DestroyTexture(sound);
-    SDL_DestroyTexture(rocket_texture);
-    SDL_DestroyTexture(background);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    IMG_Quit();
-    SDL_Quit();
-    TTF_Quit();
-    Mix_FreeMusic(music);
-    Mix_CloseAudio();
-    return 0;
+    game_quit(bomb_texture, bomb_flip_texture, sound_off_texture, sound_on_texture, lose_texture,
+              character_texture, home_texture, sound, rocket_texture, background, renderer, window, music);
+return 0;
 }
