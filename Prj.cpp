@@ -123,6 +123,7 @@ int main(int argc, char* argv[])
     bool rocket_Visible = false;
     bool moveUp = false;
     bool moveDown = false;
+    bool isPaused = false;
 
     int sound_check = 0;
     int flip = 0;
@@ -180,6 +181,14 @@ int main(int argc, char* argv[])
                     running = false;
                 }
 
+                if (event.type == SDL_KEYDOWN)
+                {
+                    if (event.key.keysym.sym == SDLK_SPACE )
+                    {
+                        isPaused = !isPaused;
+                    }
+                }
+
                 if (event.type == SDL_MOUSEBUTTONDOWN)
                 {
                     int mouseX = event.button.x;
@@ -204,7 +213,7 @@ int main(int argc, char* argv[])
                 }
             }
 
-            if(!gameOver)
+            if(!gameOver && !isPaused)
             {
                 if (moveUp && character.y > targetY)
                 {
@@ -281,6 +290,17 @@ int main(int argc, char* argv[])
             {
                 SDL_RenderCopy(renderer, character_texture, NULL, &character);
             }
+        }
+
+        if (isPaused)
+        {
+            SDL_SetRenderDrawColor(renderer, 150, 150, 110, 1);
+            SDL_RenderFillRect(renderer, NULL);
+
+            SDL_Texture* pauseTexture = renderText("Game Paused. Press SPACE to Resume", font, textColor, renderer);
+            SDL_Rect pauseRect = {SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2 - 50, 300, 100};
+            SDL_RenderCopy(renderer, pauseTexture, NULL, &pauseRect);
+            SDL_DestroyTexture(pauseTexture);
         }
 
         while(gameOver && lose_menu)
