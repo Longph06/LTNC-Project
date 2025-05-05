@@ -1,8 +1,0 @@
-- Speed = 7 -> 		+ 2000		Points: 15
-- Speed = 7.5 -> 	+ 1800		Points: 30
-- Speed = 8 -> 		+ 1600		Points: 40
-- Speed = 8.5 ->	+ 1400		Points: 50
-- Speed = 9 -> 		+ 1200		Points: 60
-- Speed = 9.5 ->	+ 1000		Points: 70
-- Speed = 10 ->		+ 700		Points: 80
-
