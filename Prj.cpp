@@ -69,11 +69,11 @@ int main(int argc, char* argv[])
     SDL_Texture* bomb_flip_texture = loadTexture("bomb_flip.png", renderer);
     SDL_Texture* character_texture = loadTexture("Character.png", renderer);
     SDL_Texture* lose_texture = loadTexture("lose.png", renderer);
+    SDL_Texture* home_texture = loadTexture("home.png", renderer);
+    SDL_Texture* rocket_texture = loadTexture("rocket.png", renderer);
     SDL_Texture* sound_on_texture = loadTexture("sound_on.png", renderer);
     SDL_Texture* sound_off_texture = loadTexture("sound_off.png", renderer);
-    SDL_Texture* rocket_texture = loadTexture("rocket.png", renderer);
     SDL_Texture* sound;
-    SDL_Texture* home_texture = loadTexture("home.png", renderer);
 
     SDL_Rect bomb = {BOMB_START_X, BOMB_START_Y1, BOMB_WIDTH, BOMB_HEIGHT};
     SDL_Rect bomb_flip = {BOMB_START_X, BOMB_START_Y2, BOMB_WIDTH, BOMB_HEIGHT};
@@ -99,12 +99,13 @@ int main(int argc, char* argv[])
     SDL_Init(SDL_INIT_AUDIO);
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     Mix_Music* music = Mix_LoadMUS("GameSound.wav");
-    if (!music)
-    {
-        cout << "Không mở được nhạc: " << Mix_GetError() << endl;
-        return -1;
-    }
+    Mix_Chunk* rocket_sound = Mix_LoadWAV("Rocket.wav");
+    Mix_Chunk* collision = Mix_LoadWAV("Collision.wav");
     Mix_PlayMusic(music, -1);
+
+    Mix_VolumeMusic(MIX_MAX_VOLUME / 8);
+    Mix_VolumeChunk(rocket_sound, 128);
+    Mix_VolumeChunk(collision, 128);
 
     Uint32 nextBombTime = SDL_GetTicks() + (rand() % 7000) + 2000;
     Uint32 nextBombflipTime = SDL_GetTicks() + (rand() % 7000) + 2000;
@@ -124,6 +125,7 @@ int main(int argc, char* argv[])
     bool moveUp = false;
     bool moveDown = false;
     bool isPaused = false;
+    bool scrolling_bg = true;
 
     int sound_check = 0;
     int flip = 0;
@@ -131,6 +133,8 @@ int main(int argc, char* argv[])
     int point = 0;
     int mod;
     int ms;
+    int rkt = -1;
+    int col = -1;
 
     sound = sound_on_texture;
     SDL_Event event;
@@ -140,11 +144,9 @@ int main(int argc, char* argv[])
         SDL_RenderClear(renderer);
         if (inGame == true)
         {
-            backgroundX -= BACKGROUND_SPEED;
-            if (backgroundX <= -SCREEN_WIDTH)
-            {
-                backgroundX = 0;
-            }
+            if(scrolling_bg)
+            scrollingg_background(backgroundX, BACKGROUND_SPEED, SCREEN_WIDTH);
+
             SDL_Rect bgRect1 = {backgroundX, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
             SDL_Rect bgRect2 = {backgroundX + SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
             SDL_RenderCopy(renderer, background, NULL, &bgRect1);
@@ -170,7 +172,7 @@ int main(int argc, char* argv[])
         SDL_RenderCopy(renderer, home_texture, NULL, &home);
         SDL_RenderCopy(renderer, sound, NULL, &soundd);
 
-        game_sound(sound_check, sound, sound_on_texture, sound_off_texture, renderer, soundd);
+        game_sound(sound_check, sound, sound_on_texture, sound_off_texture, renderer, soundd, col, rkt);
 
         if(inGame)
         {
@@ -186,29 +188,33 @@ int main(int argc, char* argv[])
                     if (event.key.keysym.sym == SDLK_SPACE )
                     {
                         isPaused = !isPaused;
+                        scrolling_bg = !scrolling_bg;
                     }
                 }
 
                 if (event.type == SDL_MOUSEBUTTONDOWN)
                 {
-                    int mouseX = event.button.x;
-                    int mouseY = event.button.y;
-
-                    if(mouseX >= SOUND_X && mouseX <= (SOUND_X + SOUND_WIDTH) && mouseY >= SOUND_Y && mouseY <= (SOUND_Y + SOUND_WIDTH))
+                    if (event.button.button == SDL_BUTTON_LEFT)
                     {
-                        sound_check++;
-                    }
+                        int mouseX = event.button.x;
+                        int mouseY = event.button.y;
 
-                    if (mouseX >= (SOUND_WIDTH + SOUND_X) && mouseX <= 1000 && mouseY >= 0 && mouseY <= 550)
-                    {
-                        check_movement(flip, targetY, moveDown, moveUp);
+                        if(mouseX >= SOUND_X && mouseX <= (SOUND_X + SOUND_WIDTH) && mouseY >= SOUND_Y && mouseY <= (SOUND_Y + SOUND_WIDTH))
+                        {
+                            sound_check++;
+                        }
 
-                    }
-                    if(mouseX >= HOME_START_X && mouseX <= (HOME_START_X + HOME_WIDTH) && mouseY >= HOME_START_Y && mouseY <= (HOME_START_Y + HOME_HEIGHT))
-                    {
-                        SDL_DestroyTexture(background);
-                        background = loadTexture("Interface.png", renderer);
-                        inGame = false;
+                        if (mouseX >= (SOUND_WIDTH + SOUND_X) && mouseX <= 1000 && mouseY >= 0 && mouseY <= 550)
+                        {
+                            check_movement(flip, targetY, moveDown, moveUp);
+
+                        }
+                        if(mouseX >= HOME_START_X && mouseX <= (HOME_START_X + HOME_WIDTH) && mouseY >= HOME_START_Y && mouseY <= (HOME_START_Y + HOME_HEIGHT))
+                        {
+                            SDL_DestroyTexture(background);
+                            background = loadTexture("Interface.png", renderer);
+                            inGame = false;
+                        }
                     }
                 }
             }
@@ -266,17 +272,25 @@ int main(int argc, char* argv[])
 
                 if (showRocket)
                 {
+                    if(rkt == -1)
+                        rkt = Mix_PlayChannel(-1, rocket_sound, 0);
                     rocket.x -= ROCKET_SPEED;
                     SDL_RenderCopy(renderer, rocket_texture, NULL, &rocket);
                     if (rocket.x + ROCKET_WIDTH < 0)
                     {
                         showRocket = false;
                         rocket_Visible = false;
+                        rkt = -1;
                     }
                 }
 
                 if (checkCollision(character, bomb) || checkCollision(character, bomb_flip) || checkCollision(character, rocket))
                 {
+                    if (col == -1)
+                    {
+                        col = Mix_PlayChannel(-1, collision, 0);
+                    }
+                    rkt = 0;
                     gameOver = true;
                     lose_menu = true;
                 }
@@ -294,9 +308,12 @@ int main(int argc, char* argv[])
 
         if (isPaused)
         {
-            SDL_SetRenderDrawColor(renderer, 150, 150, 110, 1);
+            scrolling_bg = false;
+            SDL_Rect overlayRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
+            SDL_RenderFillRect(renderer, &overlayRect);
             SDL_RenderFillRect(renderer, NULL);
-
             SDL_Texture* pauseTexture = renderText("Game Paused. Press SPACE to Resume", font, textColor, renderer);
             SDL_Rect pauseRect = {SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2 - 50, 300, 100};
             SDL_RenderCopy(renderer, pauseTexture, NULL, &pauseRect);
@@ -334,39 +351,44 @@ int main(int argc, char* argv[])
                 }
                 if(event.type == SDL_MOUSEBUTTONUP)
                 {
-                    int mouseX = event.button.x;
-                    int mouseY = event.button.y;
-                    if(mouseX >= 430 && mouseX <= 570 && mouseY >= 250 && mouseY <= 365)
+                    if (event.button.button == SDL_BUTTON_LEFT)
                     {
-                        start_game(gameOver, inGame, lose_menu, showBomb, showBombflip, showRocket, bomb_Visible, bomb_flip_Visible, rocket_Visible,
-                          nextBombTime, nextBombflipTime, nextRocketTime, rocket, bomb, bomb_flip, flip, point, character, moveDown, moveUp, targetY);
+                        int mouseX = event.button.x;
+                        int mouseY = event.button.y;
+                        if(mouseX >= 430 && mouseX <= 570 && mouseY >= 250 && mouseY <= 365)
+                        {
+                            start_game(gameOver, inGame, lose_menu, showBomb, showBombflip, showRocket, bomb_Visible, bomb_flip_Visible, rocket_Visible,
+                              nextBombTime, nextBombflipTime, nextRocketTime, rocket, bomb, bomb_flip, flip, point, character, moveDown, moveUp, targetY);
+                            rkt = -1;
+                            col = -1;
+                        }
                     }
                 }
             }
         }
         SDL_RenderPresent(renderer);
 
-            if(inGame == false)
+        if(inGame == false)
+        {
+            while (SDL_PollEvent(&event))
             {
-                while (SDL_PollEvent(&event))
+                if (event.type == SDL_QUIT)
                 {
-                    if (event.type == SDL_QUIT)
-                    {
-                        running = false;
-                        resetHighScoreFile("highscore.txt");
-                    }
-                    if (event.type == SDL_MOUSEBUTTONDOWN)
+                    running = false;
+                    resetHighScoreFile("highscore.txt");
+                }
+                if (event.type == SDL_MOUSEBUTTONDOWN)
+                {
+                    if (event.button.button == SDL_BUTTON_LEFT)
                     {
                         int mouseX = event.button.x;
                         int mouseY = event.button.y;
-
                         if(mouseX >= HOME_START_X && mouseX <= (HOME_START_X + HOME_WIDTH) && mouseY >= HOME_START_Y && mouseY <= (HOME_START_Y + HOME_HEIGHT))
                         {
                             resetHighScoreFile("highscore.txt");
-
-                           game_quit(bomb_texture, bomb_flip_texture, sound_off_texture, sound_on_texture, lose_texture,
-                                     character_texture, home_texture, sound, rocket_texture, background, renderer, window, music);
-                            return 0;
+                            game_quit(bomb_texture, bomb_flip_texture, sound_off_texture, sound_on_texture, lose_texture,
+                                      character_texture, home_texture, sound, rocket_texture, background, renderer, window, music, rocket_sound, collision);
+                                return 0;
                         }
 
                         if(mouseX >= SOUND_X && mouseX <= (SOUND_X + SOUND_WIDTH) && mouseY >= SOUND_Y && mouseY <= (SOUND_Y + SOUND_WIDTH))
@@ -385,8 +407,11 @@ int main(int argc, char* argv[])
                         {
                             SDL_DestroyTexture(background);
                             background = loadTexture("Ingame.png", renderer);
+
                             game_on(flip, character, point, inGame, lose_menu, moveDown, moveUp, showBomb,
                                     showBombflip, showRocket, bomb_Visible, bomb_flip_Visible, nextBombTime,nextBombflipTime);
+                            rkt = -1;
+                            col = -1;
                         }
 
                         if (mouseX >= 0 && mouseX <= 174 && mouseY >= 490 && mouseY <= 550)
@@ -398,12 +423,13 @@ int main(int argc, char* argv[])
                     }
                 }
             }
+        }
         SDL_RenderPresent(renderer);
         SDL_Delay(delay);
     }
     resetHighScoreFile("highscore.txt");
 
     game_quit(bomb_texture, bomb_flip_texture, sound_off_texture, sound_on_texture, lose_texture,
-              character_texture, home_texture, sound, rocket_texture, background, renderer, window, music);
+              character_texture, home_texture, sound, rocket_texture, background, renderer, window, music, rocket_sound, collision);
     return 0;
 }

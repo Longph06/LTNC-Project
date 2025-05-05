@@ -23,19 +23,23 @@ void check_movement(int &flip, int &targetY, bool &moveDown, bool &moveUp)
     }
 }
 
-void game_sound(int sound_check, SDL_Texture* &sound, SDL_Texture* &sound_on_texture, SDL_Texture* &sound_off_texture, SDL_Renderer* renderer, SDL_Rect soundd)
+void game_sound(int sound_check, SDL_Texture* &sound, SDL_Texture* &sound_on_texture, SDL_Texture* &sound_off_texture, SDL_Renderer* renderer, SDL_Rect soundd, int col, int rkt)
 {
     if(sound_check % 2 == 0)
     {
         sound = sound_on_texture;
         SDL_RenderCopy(renderer, sound, NULL, &soundd);
         Mix_ResumeMusic();
+        Mix_Resume(col);
+        Mix_Resume(rkt);
     }
     else
     {
         sound = sound_off_texture;
         SDL_RenderCopy(renderer, sound, NULL, &soundd);
         Mix_PauseMusic();
+        Mix_Pause(col);
+        Mix_Pause(rkt);
     }
 }
 
@@ -145,7 +149,7 @@ void game_quit(SDL_Texture* bomb_texture, SDL_Texture* bomb_flip_texture,
               SDL_Texture* home_texture, SDL_Texture* sound,
               SDL_Texture* rocket_texture, SDL_Texture* background,
               SDL_Renderer* renderer, SDL_Window* window,
-              Mix_Music* music)
+              Mix_Music* music, Mix_Chunk* rocket_sound, Mix_Chunk* collision)
 {
                             SDL_DestroyTexture(bomb_texture);
                             SDL_DestroyTexture(bomb_flip_texture);
@@ -163,6 +167,10 @@ void game_quit(SDL_Texture* bomb_texture, SDL_Texture* bomb_flip_texture,
                             SDL_Quit();
                             TTF_Quit();
                             Mix_FreeMusic(music);
+                            Mix_FreeChunk(collision);
+
+                            Mix_FreeChunk(rocket_sound);
+
                             Mix_CloseAudio();
 }
 
@@ -254,4 +262,13 @@ void game_on(int &flip, SDL_Rect &character, int &point, bool &inGame, bool &los
     nextBombTime = SDL_GetTicks() + (rand() % 5000) + 1000;
     nextBombflipTime = SDL_GetTicks() + (rand() % 5000) + 1000;
 }
-#endif // GAME_LOGIC_H
+
+void scrollingg_background(int &backgroundX, float BACKGROUND_SPEED, int SCREEN_WIDTH)
+{
+    backgroundX -= BACKGROUND_SPEED;
+            if (backgroundX <= -SCREEN_WIDTH)
+            {
+                backgroundX = 0;
+            }
+}
+#endif

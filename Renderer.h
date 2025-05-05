@@ -40,4 +40,4 @@ SDL_Texture* renderText(const string &message, TTF_Font *font, SDL_Color color, 
     return texture;
 }
 
-#endif // RENDERER_H
+#endif

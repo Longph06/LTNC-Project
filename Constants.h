@@ -35,5 +35,7 @@ const int HOME_HEIGHT = 65;
 extern float delay;
 extern int backgroundX;
 extern float BACKGROUND_SPEED;
+extern int rkt;
+extern int col;
 
-#endif // CONSTANTS_H
+#endif
