@@ -29,3 +29,34 @@
 	<iostream>
 	<string>
 
+1745223001 source:d:\git\ltnc-project\main.cpp
+
+1746415630 source:d:\git\ltnc-project\prj.cpp
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_mixer.h>
+	<SDL_ttf.h>
+	<iostream>
+	<ctime>
+	<cstdlib>
+	<string>
+	<fstream>
+	"Constants.h"
+	"GameLogic.h"
+	"Renderer.h"
+
+1745369834 d:\git\ltnc-project\constants.h
+
+1745813155 d:\git\ltnc-project\gamelogic.h
+	<SDL.h>
+	<SDL_mixer.h>
+	<iostream>
+	"Constants.h"
+
+1745370573 d:\git\ltnc-project\renderer.h
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<iostream>
+	<string>
+
