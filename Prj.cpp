@@ -98,12 +98,12 @@ int main(int argc, char* argv[])
 
     SDL_Init(SDL_INIT_AUDIO);
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-    Mix_Music* music = Mix_LoadMUS("GameSound.wav");
+    Mix_Music* music = Mix_LoadMUS("GameSound.mp3");
     Mix_Chunk* rocket_sound = Mix_LoadWAV("Rocket.wav");
     Mix_Chunk* collision = Mix_LoadWAV("Collision.wav");
     Mix_PlayMusic(music, -1);
 
-    Mix_VolumeMusic(MIX_MAX_VOLUME / 8);
+    Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
     Mix_VolumeChunk(rocket_sound, 128);
     Mix_VolumeChunk(collision, 128);
 

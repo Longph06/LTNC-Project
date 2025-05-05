@@ -45,7 +45,7 @@ void game_sound(int sound_check, SDL_Texture* &sound, SDL_Texture* &sound_on_tex
 
 void game_property(int point, int &ms, float &BOMB_SPEED, int &mod, float &BACKGROUND_SPEED, float& delay, float &ROCKET_SPEED)
 {
-    if(point <= 3)
+    if(point <= 2)
     {
         BOMB_SPEED = 9;
         ms = 2000;
@@ -55,7 +55,7 @@ void game_property(int point, int &ms, float &BOMB_SPEED, int &mod, float &BACKG
         delay = 16;
         ROCKET_SPEED = 10;
     }
-    else if(point <= 6)
+    else if(point <= 4)
     {
         BOMB_SPEED = 9.5;
         ms = 1800;
@@ -65,7 +65,7 @@ void game_property(int point, int &ms, float &BOMB_SPEED, int &mod, float &BACKG
         delay = 15;
         ROCKET_SPEED = 10.5;
     }
-    else if(point <= 9)
+    else if(point <= 6)
     {
         BOMB_SPEED = 10;
         ms = 1600;
@@ -75,7 +75,7 @@ void game_property(int point, int &ms, float &BOMB_SPEED, int &mod, float &BACKG
         delay = 14;
         ROCKET_SPEED = 11;
     }
-    else if(point <= 12)
+    else if(point <= 8)
     {
         BOMB_SPEED = 10.5;
         ms = 1400;
@@ -85,7 +85,7 @@ void game_property(int point, int &ms, float &BOMB_SPEED, int &mod, float &BACKG
         delay = 13.5;
         ROCKET_SPEED = 11.5;
     }
-    else if(point <= 15)
+    else if(point <= 10)
     {
         BOMB_SPEED = 11;
         ms = 1200;
@@ -95,7 +95,7 @@ void game_property(int point, int &ms, float &BOMB_SPEED, int &mod, float &BACKG
         delay = 13;
         ROCKET_SPEED = 12;
     }
-    else if(point <= 18)
+    else if(point <= 12)
     {
         BOMB_SPEED = 11.5;
         ms = 1000;
@@ -151,27 +151,25 @@ void game_quit(SDL_Texture* bomb_texture, SDL_Texture* bomb_flip_texture,
               SDL_Renderer* renderer, SDL_Window* window,
               Mix_Music* music, Mix_Chunk* rocket_sound, Mix_Chunk* collision)
 {
-                            SDL_DestroyTexture(bomb_texture);
-                            SDL_DestroyTexture(bomb_flip_texture);
-                            SDL_DestroyTexture(sound_off_texture);
-                            SDL_DestroyTexture(sound_on_texture);
-                            SDL_DestroyTexture(lose_texture);
-                            SDL_DestroyTexture(character_texture);
-                            SDL_DestroyTexture(home_texture);
-                            SDL_DestroyTexture(sound);
-                            SDL_DestroyTexture(rocket_texture);
-                            SDL_DestroyTexture(background);
-                            SDL_DestroyRenderer(renderer);
-                            SDL_DestroyWindow(window);
-                            IMG_Quit();
-                            SDL_Quit();
-                            TTF_Quit();
-                            Mix_FreeMusic(music);
-                            Mix_FreeChunk(collision);
-
-                            Mix_FreeChunk(rocket_sound);
-
-                            Mix_CloseAudio();
+    SDL_DestroyTexture(bomb_texture);
+    SDL_DestroyTexture(bomb_flip_texture);
+    SDL_DestroyTexture(sound_off_texture);
+    SDL_DestroyTexture(sound_on_texture);
+    SDL_DestroyTexture(lose_texture);
+    SDL_DestroyTexture(character_texture);
+    SDL_DestroyTexture(home_texture);
+    SDL_DestroyTexture(sound);
+    SDL_DestroyTexture(rocket_texture);
+    SDL_DestroyTexture(background);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    Mix_FreeMusic(music);
+    Mix_FreeChunk(collision);
+    Mix_FreeChunk(rocket_sound);
+    IMG_Quit();
+    SDL_Quit();
+    TTF_Quit();
+    Mix_CloseAudio();
 }
 
 void ShowBomb(SDL_Rect &bomb, SDL_Texture* bomb_texture, SDL_Renderer* renderer,
@@ -192,7 +190,7 @@ void ShowBomb(SDL_Rect &bomb, SDL_Texture* bomb_texture, SDL_Renderer* renderer,
 }
 
 void ShowBombFlip(SDL_Rect &bomb_flip, SDL_Texture* bomb_flip_texture, SDL_Renderer* renderer,
-             float BOMB_SPEED, bool &showBombflip, bool &bomb_flip_Visible, int &point)
+                  float BOMB_SPEED, bool &showBombflip, bool &bomb_flip_Visible, int &point)
 {
     if (showBombflip)
     {
@@ -244,7 +242,6 @@ void game_on(int &flip, SDL_Rect &character, int &point, bool &inGame, bool &los
              bool &showRocket, bool &bomb_Visible, bool &bomb_flip_Visible,
              Uint32 &nextBombTime, Uint32 &nextBombflipTime)
 {
-
     flip = 0;
     character.y = 328;
     point = 0;
@@ -266,9 +263,9 @@ void game_on(int &flip, SDL_Rect &character, int &point, bool &inGame, bool &los
 void scrollingg_background(int &backgroundX, float BACKGROUND_SPEED, int SCREEN_WIDTH)
 {
     backgroundX -= BACKGROUND_SPEED;
-            if (backgroundX <= -SCREEN_WIDTH)
-            {
-                backgroundX = 0;
-            }
+    if (backgroundX <= -SCREEN_WIDTH)
+    {
+        backgroundX = 0;
+    }
 }
 #endif
