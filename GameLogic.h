@@ -214,7 +214,7 @@ void ShowBombFlip(SDL_Rect &bomb_flip, SDL_Texture* bomb_flip_texture, SDL_Rende
     }
 }
 
-void start_game(bool &gameOver, bool &inGame, bool &lose_menu,
+void game_restart(bool &gameOver, bool &inGame, bool &lose_menu,
                  bool &showBomb, bool &showBombflip, bool &showRocket,
                  bool &bomb_Visible, bool &bomb_flip_Visible, bool &rocket_Visible,
                  Uint32 &nextBombTime, Uint32 &nextBombflipTime, Uint32 &nextRocketTime,
@@ -246,7 +246,7 @@ void start_game(bool &gameOver, bool &inGame, bool &lose_menu,
     targetY = character.y;
 }
 
-void game_on(int &flip, SDL_Rect &character, int &point, bool &inGame, bool &lose_menu,
+void game_start(int &flip, SDL_Rect &character, int &point, bool &inGame, bool &lose_menu,
              bool &moveDown, bool &moveUp, bool &showBomb, bool &showBombflip,
              bool &showRocket, bool &bomb_Visible, bool &bomb_flip_Visible,
              Uint32 &nextBombTime, Uint32 &nextBombflipTime)

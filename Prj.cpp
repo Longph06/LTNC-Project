@@ -365,7 +365,7 @@ int main(int argc, char* argv[])
                         int mouseY = event.button.y;
                         if(mouseX >= 430 && mouseX <= 570 && mouseY >= 250 && mouseY <= 365)
                         {
-                            start_game(gameOver, inGame, lose_menu, showBomb, showBombflip, showRocket, bomb_Visible, bomb_flip_Visible, rocket_Visible,
+                            game_restart(gameOver, inGame, lose_menu, showBomb, showBombflip, showRocket, bomb_Visible, bomb_flip_Visible, rocket_Visible,
                               nextBombTime, nextBombflipTime, nextRocketTime, rocket, bomb, bomb_flip, flip, point, character, moveDown, moveUp, targetY);
                             rkt = -1;
                             col = -1;
@@ -416,7 +416,7 @@ int main(int argc, char* argv[])
                             SDL_DestroyTexture(background);
                             background = loadTexture("Ingame.png", renderer);
 
-                            game_on(flip, character, point, inGame, lose_menu, moveDown, moveUp, showBomb,
+                            game_start(flip, character, point, inGame, lose_menu, moveDown, moveUp, showBomb,
                                     showBombflip, showRocket, bomb_Visible, bomb_flip_Visible, nextBombTime,nextBombflipTime);
                             rkt = -1;
                             col = -1;
