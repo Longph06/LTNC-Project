@@ -23,11 +23,13 @@ int backgroundX = 0;
 float BACKGROUND_SPEED = 3;
 string filename = "highscore.txt";
 
-int readHighScore(const string& filename) {
+int readHighScore(const string& filename)
+{
     ifstream file(filename);
     int highScore = 0;
 
-    if (file.is_open()) {
+    if (file.is_open())
+    {
         file >> highScore;
         file.close();
     }
@@ -35,32 +37,37 @@ int readHighScore(const string& filename) {
     return highScore;
 }
 
-void saveHighScore(const string& filename, int newScore) {
+void saveHighScore(const string& filename, int newScore)
+{
     int currentHighScore = readHighScore(filename);
 
-    if (newScore > currentHighScore) {
+    if (newScore > currentHighScore)
+    {
         ofstream file(filename);
-        if (file.is_open()) {
+        if (file.is_open())
+        {
             file << newScore;
             file.close();
         }
     }
 }
 
-void resetHighScoreFile(const string& filename) {
+void resetHighScoreFile(const string& filename)
+{
     ofstream file(filename, ios::out | ios::trunc);
-    if (file.is_open()) {
+    if (file.is_open())
+    {
         file << 0;
         file.close();
-    } else {
+    }
+    else
+    {
         cerr << "Không thể reset file highscore." << endl;
     }
 }
 
 int main(int argc, char* argv[])
 {
-    srand(time(NULL));
-
     SDL_Window* window = SDL_CreateWindow("SDL Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
@@ -104,9 +111,10 @@ int main(int argc, char* argv[])
     Mix_PlayMusic(music, -1);
 
     Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
-    Mix_VolumeChunk(rocket_sound, 128);
-    Mix_VolumeChunk(collision, 128);
+    Mix_VolumeChunk(rocket_sound, 100);
+    Mix_VolumeChunk(collision, 100);
 
+    srand(time(NULL));
     Uint32 nextBombTime = SDL_GetTicks() + (rand() % 7000) + 2000;
     Uint32 nextBombflipTime = SDL_GetTicks() + (rand() % 7000) + 2000;
     Uint32 nextRocketTime = SDL_GetTicks() + (rand() % 10000) + 5000;
@@ -131,8 +139,8 @@ int main(int argc, char* argv[])
     int flip = 0;
     int targetY = character.y;
     int point = 0;
-    int mod;
-    int ms;
+    int rocket_time;
+    int bomb_time;
     int rkt = -1;
     int col = -1;
 
@@ -239,14 +247,14 @@ int main(int argc, char* argv[])
                         moveDown = false;
                     }
                 }
-                game_property(point, ms, BOMB_SPEED, mod, BACKGROUND_SPEED, delay, ROCKET_SPEED);
+                game_property(point, bomb_time, BOMB_SPEED, rocket_time, BACKGROUND_SPEED, delay, ROCKET_SPEED);
 
                 if (SDL_GetTicks() >= nextBombTime && !bomb_Visible)
                 {
                     showBomb = true;
                     bomb_Visible = true;
                     bomb.x = BOMB_START_X;
-                    nextBombTime = SDL_GetTicks() + (rand() % 4000) + ms;
+                    nextBombTime = SDL_GetTicks() + (rand() % 4000) + bomb_time;
                 }
 
                 ShowBomb(bomb, bomb_texture, renderer, BOMB_SPEED, showBomb, bomb_Visible, point);
@@ -256,7 +264,7 @@ int main(int argc, char* argv[])
                     showBombflip = true;
                     bomb_flip_Visible = true;
                     bomb_flip.x = BOMB_START_X;
-                    nextBombflipTime = SDL_GetTicks() + (rand() % 4000) + ms;
+                    nextBombflipTime = SDL_GetTicks() + (rand() % 4000) + bomb_time;
                 }
 
                 ShowBombFlip(bomb_flip, bomb_flip_texture, renderer, BOMB_SPEED, showBombflip, bomb_flip_Visible, point);
@@ -267,7 +275,7 @@ int main(int argc, char* argv[])
                     rocket_Visible = true;
                     rocket.x = ROCKET_START_X;
                     rocket.y = (220 + rand() % 50);
-                    nextRocketTime = SDL_GetTicks() + (rand() % 8000) + mod;
+                    nextRocketTime = SDL_GetTicks() + (rand() % 8000) + rocket_time;
                 }
 
                 if (showRocket)

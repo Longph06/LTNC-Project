@@ -29,27 +29,25 @@ void game_sound(int sound_check, SDL_Texture* &sound, SDL_Texture* &sound_on_tex
     {
         sound = sound_on_texture;
         SDL_RenderCopy(renderer, sound, NULL, &soundd);
-        Mix_ResumeMusic();
-        Mix_Resume(col);
-        Mix_Resume(rkt);
+        Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
+        Mix_Volume(-1, 100);
     }
     else
     {
         sound = sound_off_texture;
         SDL_RenderCopy(renderer, sound, NULL, &soundd);
-        Mix_PauseMusic();
-        Mix_Pause(col);
-        Mix_Pause(rkt);
+        Mix_VolumeMusic(0);
+        Mix_Volume(-1, 0);
     }
 }
 
-void game_property(int point, int &ms, float &BOMB_SPEED, int &mod, float &BACKGROUND_SPEED, float& delay, float &ROCKET_SPEED)
+void game_property(int point, int &bomb_time, float &BOMB_SPEED, int &rocket_time, float &BACKGROUND_SPEED, float& delay, float &ROCKET_SPEED)
 {
     if(point <= 2)
     {
         BOMB_SPEED = 9;
-        ms = 2000;
-        mod = 8000;
+        bomb_time = 2000;
+        rocket_time = 8000;
         CHARACTER_SPEED = 5;
         BACKGROUND_SPEED = 3;
         delay = 16;
@@ -58,8 +56,8 @@ void game_property(int point, int &ms, float &BOMB_SPEED, int &mod, float &BACKG
     else if(point <= 4)
     {
         BOMB_SPEED = 9.5;
-        ms = 1800;
-        mod = 7000;
+        bomb_time = 1800;
+        rocket_time = 7000;
         CHARACTER_SPEED = 5.2;
         BACKGROUND_SPEED = 3.4;
         delay = 15;
@@ -68,8 +66,8 @@ void game_property(int point, int &ms, float &BOMB_SPEED, int &mod, float &BACKG
     else if(point <= 6)
     {
         BOMB_SPEED = 10;
-        ms = 1600;
-        mod = 6500;
+        bomb_time = 1600;
+        rocket_time = 6500;
         CHARACTER_SPEED = 5.4;
         BACKGROUND_SPEED = 3.8;
         delay = 14;
@@ -78,8 +76,8 @@ void game_property(int point, int &ms, float &BOMB_SPEED, int &mod, float &BACKG
     else if(point <= 8)
     {
         BOMB_SPEED = 10.5;
-        ms = 1400;
-        mod = 6000;
+        bomb_time = 1400;
+        rocket_time = 6000;
         CHARACTER_SPEED = 5.6;
         BACKGROUND_SPEED = 4.2;
         delay = 13.5;
@@ -88,32 +86,42 @@ void game_property(int point, int &ms, float &BOMB_SPEED, int &mod, float &BACKG
     else if(point <= 10)
     {
         BOMB_SPEED = 11;
-        ms = 1200;
-        mod = 5500;
+        bomb_time = 1200;
+        rocket_time = 5500;
         CHARACTER_SPEED = 5.8;
         BACKGROUND_SPEED = 4.6;
         delay = 13;
         ROCKET_SPEED = 12;
     }
-    else if(point <= 12)
+    else if(point <= 13)
     {
         BOMB_SPEED = 11.5;
-        ms = 1000;
-        mod = 5000;
+        bomb_time = 1000;
+        rocket_time = 5000;
         CHARACTER_SPEED = 6;
         BACKGROUND_SPEED = 5;
         delay = 12.5;
         ROCKET_SPEED = 12.5;
     }
-    else
+    else if(point <= 16)
     {
         BOMB_SPEED = 12;
-        ms = 700;
-        mod = 4500;
+        bomb_time = 700;
+        rocket_time = 4500;
         CHARACTER_SPEED = 6.3;
         BACKGROUND_SPEED = 5.4;
         delay = 12;
         ROCKET_SPEED = 13;
+    }
+    else
+    {
+        BOMB_SPEED = 13;
+        bomb_time = 500;
+        rocket_time = 4000;
+        CHARACTER_SPEED = 6.7;
+        BACKGROUND_SPEED = 6;
+        delay = 13;
+        ROCKET_SPEED = 14;
     }
 }
 
@@ -214,6 +222,7 @@ void start_game(bool &gameOver, bool &inGame, bool &lose_menu,
                  int &flip, int &point, SDL_Rect &character,
                  bool &moveDown, bool &moveUp, int &targetY)
 {
+
     gameOver = false;
     inGame = true;
     lose_menu = false;
