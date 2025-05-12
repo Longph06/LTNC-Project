@@ -22,7 +22,7 @@ Bấm SPACEBAR để tạm dừng trò chơi.
 Điểm số của người chơi được hiện ở góc phải trên cùng màn hình.  
 **Cách tính điểm trò chơi:** Mỗi khi bom chạy hết màn hình, người chơi sẽ được cộng 1 điểm.
 
-## NGƯỠNG ĐIỂM ĐỀ XUẤT: 8.0+
+## NGƯỠNG ĐIỂM ĐỀ XUẤT: 8.5
 
 ### LÝ DO:
 
