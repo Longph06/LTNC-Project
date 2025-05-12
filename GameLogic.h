@@ -222,7 +222,6 @@ void game_restart(bool &gameOver, bool &inGame, bool &lose_menu,
                  int &flip, int &point, SDL_Rect &character,
                  bool &moveDown, bool &moveUp, int &targetY)
 {
-
     gameOver = false;
     inGame = true;
     lose_menu = false;

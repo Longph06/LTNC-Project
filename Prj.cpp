@@ -14,13 +14,6 @@
 
 using namespace std;
 
-float CHARACTER_SPEED = 5;
-float BOMB_SPEED = 9;
-int ROCKET_START_Y = 0;
-float ROCKET_SPEED = 10;
-float delay = 16;
-int backgroundX = 0;
-float BACKGROUND_SPEED = 3;
 string filename = "highscore.txt";
 
 int readHighScore(const string& filename)
@@ -115,35 +108,8 @@ int main(int argc, char* argv[])
     Mix_VolumeChunk(collision, 100);
 
     srand(time(NULL));
-    Uint32 nextBombTime = SDL_GetTicks() + (rand() % 7000) + 2000;
-    Uint32 nextBombflipTime = SDL_GetTicks() + (rand() % 7000) + 2000;
-    Uint32 nextRocketTime = SDL_GetTicks() + (rand() % 10000) + 5000;
 
-    bool showBomb = false;
-    bool showBombflip = false;
-    bool showRocket = false;
-    bool running = true;
-    bool inGame = false;
-    bool gameOver = false;
-    bool lose_menu = false;
-    bool instruction = false;
-    bool bomb_Visible = false;
-    bool bomb_flip_Visible = false;
-    bool rocket_Visible = false;
-    bool moveUp = false;
-    bool moveDown = false;
-    bool isPaused = false;
-    bool scrolling_bg = true;
-
-    int sound_check = 0;
-    int flip = 0;
     int targetY = character.y;
-    int point = 0;
-    int rocket_time;
-    int bomb_time;
-    int rkt = -1;
-    int col = -1;
-
     sound = sound_on_texture;
     SDL_Event event;
 

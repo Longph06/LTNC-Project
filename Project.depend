@@ -31,7 +31,7 @@
 
 1745223001 source:d:\git\ltnc-project\main.cpp
 
-1746510541 source:d:\git\ltnc-project\prj.cpp
+1747061384 source:d:\git\ltnc-project\prj.cpp
 	<SDL.h>
 	<SDL_image.h>
 	<SDL_mixer.h>
@@ -45,15 +45,15 @@
 	"GameLogic.h"
 	"Renderer.h"
 
-1746435352 d:\git\ltnc-project\constants.h
+1747061647 d:\git\ltnc-project\constants.h
 
-1746510541 d:\git\ltnc-project\gamelogic.h
+1747061644 d:\git\ltnc-project\gamelogic.h
 	<SDL.h>
 	<SDL_mixer.h>
 	<iostream>
 	"Constants.h"
 
-1746432420 d:\git\ltnc-project\renderer.h
+1747061066 d:\git\ltnc-project\renderer.h
 	<SDL.h>
 	<SDL_image.h>
 	<SDL_ttf.h>
